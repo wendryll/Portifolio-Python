@@ -32,7 +32,9 @@ while not sair:
     
     if opcao == 1:
         leitura= open("cadastro.txt","r")
-        print(leitura.readlines())
+        for i in range(leitura.readlines()):
+            for j in range(i):
+                print(j)
 
     elif opcao == 2:
         arquivo = open("cadastro.txt","a")

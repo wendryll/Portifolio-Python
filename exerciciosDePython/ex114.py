@@ -4,6 +4,6 @@ import urllib.request
 try:
     urllib.request.urlopen("http://www.pudim.com.br/").getcode()
 except:
-    print("ERRO: O site não está acessivel!:(")
+    print("ERRO: O site Pudim não está acessivel!:(")
 else: 
-    print("O site está acessivel!:)")
+    print("O site Pudim está acessivel!:)")

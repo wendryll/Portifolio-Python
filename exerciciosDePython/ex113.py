@@ -5,7 +5,7 @@ def leiaInt(msg):
     while not valido:
         try:
             entrada = int(input(msg))
-        except InterruptedError:
+        except KeyboardInterrupt:
             entrada = 0
             print('Usúario preferiu não digitar esse número.')
             valido = True
@@ -20,7 +20,7 @@ def leiaFloat(msg):
     while not valido:
         try:
             entrada = float(input(msg))
-        except InterruptedError:
+        except KeyboardInterrupt:
             entrada = 0
             print('Usúario preferiu não digitar esse número.')
             valido = True
