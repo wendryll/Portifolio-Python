@@ -1,35 +1,33 @@
 #trabalhando com herança, crie uma classe que herde atributos de outra classe e implementeos
+#trabalhando com getters e setters
 
-class Pessoa():
-    def __init__(self,nome,nascimento,sexo):
+class Produto():
+    def __init__(self,nome,preco):
         self.nome = nome
-        self.nascimento = nascimento
-        self.sexo = sexo
-    def info(self):
-        print("=====INFORMAÇÕES=====")
-        print("Nome: ", self.nome)
-        print("Idade: ",self.nascimento)
-        print("Sexo: ",self.sexo)
-        print("=====================")
+        self.preco = preco
 
-class Aluno(Pessoa):
-    def __init__(self, nome, nascimento, sexo):
-        super().__init__(nome, nascimento, sexo)
+    def desconto(self,percentual):
+        self.preco = preco - (preco * percentual)
     
-    def dados(self,curso,matricula):
-        self.curso = input('Entre com o curso do aluno: ')
-        self.matricula = int(input('Entre com a matricula do aluno: '))
+    def aumento(self,percentual):
+        self.preco = preco + (preco * percentual)
 
-    def exibe(self):
-        print("=====Dado do Aluno=====")
-        print('Nome: ',self.nome)
-        print('Nascimento: ',self.nascimento)
-        print('Sexo: ',self.sexo)
-        print('curoso: ',self.curso)
-        print('matricula: ',self.matricula)
-        print('=======================')
+    @property
+    def preco(self):
+        return self._preco
 
-p1 = Pessoa("wendryll",2001,"M")
-p1.info()
-a1 = Aluno()
-a1.exibe()
+    @preco.setter
+    def preco(self, valor):
+        isinstance('R$','')
+        self._preco = valor
+
+    @property
+    def nome(self):
+        return self._nome
+
+    @nome.setter
+    def nome(self,nome):
+        self._nome = nome
+
+p1 = Produto('coca cola','R$5.25')
+print(p1.desconto(10))

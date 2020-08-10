@@ -7,7 +7,7 @@ class Pessoa: # declara a criação de uma classe chamada pessoa
         self.falando = comendo
         self.comendo = falando
 
-    def falar(self,msg): #método que recebe uma mensagem como parametro e nos retorna a mesma se o objeto não estiver comendo
+    def falar(self,msg): #método que recebe uma mensagem como parametro e nos retorna a mesma se o objeto não estiver comendo, este método esta associado a instancia da classe
         if self.comendo == True:
             print("Não se pode falar com a boca cheia")
         else:
