@@ -16,4 +16,4 @@ fileMenu.add_separator()#cria uma linha de separação no menu
 fileMenu.add_command(label='Exit',command=exit)#passando um evento ao menu por meio do command
 meuMenu.add_cascade(label='file',menu=fileMenu)#trasformando o menu em um modelo de cascata
 janela.config(menu=meuMenu)#posicionando o menu dentro da janela
-janela.mainloop()
+janela.mainloop()   
