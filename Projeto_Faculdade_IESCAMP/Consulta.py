@@ -1,67 +1,86 @@
 from tkinter import *
+from tkinter import ttk
 import DadosValidacao
 import mysql.connector #importando o conector com o banco de dados SQL
+from mysql.connector.constants import ClientFlag
 #banco de dados
-db_connection = mysql.connector.connect(host="localhost", user="root", passwd="", database="vendas") #conecta com a base de dados
+db_connection = mysql.connector.connect(host=DadosValidacao.host,
+                                        user=DadosValidacao.user,
+                                        passwd=DadosValidacao.passwd,
+                                        database=DadosValidacao.database) #conecta com a base de dados
 cursor = db_connection.cursor() #vai executar os comandos SQL
 
-#função
 def validar_numero(i):
     valido = i in DadosValidacao.numeros
     return valido
 
-def consulta():
-    """
-    ->Validar_numero:
-        -parametro i corresponde a qualquer coisa digitada pelo usuario
-        -funcao que verifica se o que foi digitado pelo usuario esta contido dentro da variavel numeros
-        em caso afirmativo o valor é devolvido, caso contrario o valor nao é devolvido
-    """
-    janela_cliente = Toplevel()
-    janela_cliente.title('Cliente')
-    dados_cliente = Listbox(janela_cliente)
+def consultar_cnpj():
+    janela_consulta_cnpj = Toplevel()
 
-    #variaveis globais
-""" Alterar Apenas testes
-    cursor.execute('SELECT uf FROM uf') #comando select do MySQL
-    myresult = cursor.fetchall()
-    conteudo = [] #lista com uf de uma tabela do banco de dados
-    for i in myresult:      #for que percorre o conteudo da tabela uf do banco de dados
-        conteudo.append(i)
-    for cont in conteudo:
-        dados_cliente.insert(END,cont)
-        dados_cliente.pack()
-    janela_cliente.mainloop()"""
-    
-
-def Consultar():
-    janela_consulta = Toplevel()
-    janela_consulta.title('Consultar')
-    largura = 250 #definindo a largura do formulario
-    altura = 100  #definido a altura do formulario
-        
+    #definindo geometria da janela info_window
+    largura = 500 #definindo a largura do formulario
+    altura = 500  #definido a altura do formulario
     #resolução do nosso sistema
-    largura_screen = janela_consulta.winfo_screenwidth() #retorna o tamanho real da largura do monitor
-    altura_screen = janela_consulta.winfo_screenheight() #retorna o tamanho real da altura do monitor
+    largura_screen = janela_consulta_cnpj.winfo_screenwidth() #retorna o tamanho real da largura do monitor
+    altura_screen = janela_consulta_cnpj.winfo_screenheight() #retorna o tamanho real da altura do monitor
+    #Posição da janela
+    posx = largura_screen/2 - largura/2  #calculo para centralizar a largura no meio
+    posy = altura_screen/2 - altura/2    #calculo para centralizar a altura no meio
+    #definir a geometry
+    janela_consulta_cnpj.geometry("%dx%d+%d+%d" % (largura, altura, posx, posy)) #Passando as posições definidas para a janela
+    janela_consulta_cnpj.resizable(False,False) #definindo que a janela não é redimencionavel
+    
+    listbox = Listbox(janela_consulta_cnpj,width=85,height=90)
+    listbox.pack()
+    
+    janela_consulta_cnpj.mainloop()
+
+
+def consultar_razao_social():
+    pass
+
+def consultar():
+    janela_consultar = Toplevel()
+    #definindo geometria da janela info_window
+    largura = 300 #definindo a largura do formulario
+    altura = 100  #definido a altura do formulario
+    #resolução do nosso sistema
+    largura_screen = janela_consultar.winfo_screenwidth() #retorna o tamanho real da largura do monitor
+    altura_screen = janela_consultar.winfo_screenheight() #retorna o tamanho real da altura do monitor
 
     #Posição da janela
     posx = largura_screen/2 - largura/2  #calculo para centralizar a largura no meio
     posy = altura_screen/2 - altura/2    #calculo para centralizar a altura no meio
 
     #definir a geometry
-    janela_consulta.geometry("%dx%d+%d+%d" % (largura, altura, posx, posy)) #Passando as posições definidas para a janela
-    janela_consulta.resizable(False,False) #definindo que a janela não é redimencionavel
+    janela_consultar.geometry("%dx%d+%d+%d" % (largura, altura, posx, posy)) #Passando as posições definidas para a janela
+    janela_consultar.resizable(False,False) #definindo que a janela não é redimencionavel  
+    
+    #variaveis 
+    validando_numero = janela_consultar.register(validar_numero)
 
-    #variaveis globais
-    validando_numero = janela_consulta.register(validar_numero)
+    notebook = ttk.Notebook(janela_consultar)
+    
+    tab_cnpj = ttk.Frame(notebook)
+    notebook.add(tab_cnpj,text='consulta cnpj')
+    notebook.pack(expand=1,fill='both')
 
-    label_cnpj = Label(janela_consulta,text='Consultar cliente por CNPJ:')
+    tab_razao_social = ttk.Frame(notebook)
+    notebook.add(tab_razao_social,text='consulta razão social')
+    notebook.pack(expand=1,fill='both')
 
-    entry_cnpj = Entry(janela_consulta,validate='key',validatecommand=(validando_numero,"%S"),width=15)
-
-    bnt_consultar = Button(janela_consulta,text='consultar',command=consulta)
-
+    label_cnpj = Label(tab_cnpj,text='consultar por CNPJ:')
+    entry_cnpj = Entry(tab_cnpj,validate='key',validatecommand=(validando_numero,"%S"),width=15)
+    bnt_cnpj = Button(tab_cnpj,text='consultar',command=consultar_cnpj)
     label_cnpj.grid(row=0,column=0,sticky=W)
     entry_cnpj.grid(row=0,column=1,sticky=W)
-    bnt_consultar.grid(row=1,column=1,sticky=W)
-    janela_consulta.mainloop()
+    bnt_cnpj.grid(row=1,column=1)
+
+    label_razao_social = Label(tab_razao_social,text='consultar por Razão Social:')
+    entry_razao_social = Entry(tab_razao_social,width=30)
+    bnt_razao_social = Button(tab_razao_social,text='consultar',command=consultar_razao_social)
+    label_razao_social.grid(row=0,column=0,sticky=W)
+    entry_razao_social.grid(row=0,column=1,sticky=W)
+    bnt_razao_social.grid(row=2,column=1)
+
+    janela_consultar.mainloop()

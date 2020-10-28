@@ -2,17 +2,15 @@ from tkinter import * #importando a biblioteca tkinter
 from tkinter import ttk #importando ttk para criação do combobox
 import DadosValidacao #importando arquivo com as variaveis de validação
 import mysql.connector #importando o conector com o banco de dados SQL
+
 #banco de dados
-db_connection = mysql.connector.connect(host="localhost", user="root", passwd="", database="vendas") #conecta com a base de dados
+db_connection = mysql.connector.connect(host=DadosValidacao.host,
+                                        user=DadosValidacao.user,
+                                        passwd=DadosValidacao.passwd,
+                                        database=DadosValidacao.database) #conecta com a base de dados
 cursor = db_connection.cursor() #vai executar os comandos SQL
 
-
 #funções
-def possui():
-    pass
-
-def salvar():
-    pass
 
 def validar_numero(i):
     """
@@ -31,7 +29,7 @@ def validar_email(i):
         -funcao que verifica se o que foi digitado pelo usuario esta contido dentro das variaveis, numeros, letras, simbolo_email,
         em caso afirmativo o valor é devolvido, caso contrario o valor nao é devolvido
     """
-    valido = i in DadosValidacao.letras + DadosValidacao.numeros + DadosValidacao.simbolo_email
+    valido = i in DadosValidacao.letras + DadosValidacao.letras.upper() + DadosValidacao.numeros + DadosValidacao.simbolo_email
     return valido
 
 def validar_url(i):
@@ -41,7 +39,7 @@ def validar_url(i):
         -funcao que verifica se o que foi digitado pelo usuario esta contido dentro das variaveis, numeros, letras, simbolo_url,
         em caso afirmativo o valor é devolvido, caso contrario o valor nao é devolvido
     """
-    valido = i in DadosValidacao.letras + DadosValidacao.numeros + DadosValidacao.simbolo_url
+    valido = i in DadosValidacao.letras+ DadosValidacao.letras.upper() + DadosValidacao.numeros + DadosValidacao.simbolo_url
     return valido
 
 def validar_letra_numero(i):
@@ -94,7 +92,7 @@ def Cadastra_cliente():
     """
         Espaço reservado para a criação de labels(tkinters)
     """
-    label_razao_social = Label(janela_cadastro, text="Razão Social:",font='arial')
+    label_razao_social = Label(janela_cadastro, text="Razão Social",font='arial')
     label_nome_fantasia = Label(janela_cadastro, text="Nome Fantasia:",font='arial')
     label_cnpj = Label(janela_cadastro, text="CNPJ:",font='arial')
     label_inscricao_estadual = Label(janela_cadastro, text="Inscrição Estadual:",font='arial')
@@ -128,15 +126,11 @@ def Cadastra_cliente():
     entry_celular = Entry(janela_cadastro,validate='key',validatecommand=(validando_numero,"%S"),width=13)
     entry_url = Entry(janela_cadastro,width=40,validate='key',validatecommand=(validando_url,"%S"))
     entry_email = Entry(janela_cadastro,validate='key',validatecommand=(validando_email,"%S"),width=40)
+    
     """
         Espaço reservado para a criação de checkbutton(tkinter)
     """
     bnt_whatsapp = Checkbutton(janela_cadastro,text="Whatsapp:",variable=valor_whatsapp).grid(row=8,column=5)
-
-    """
-        Espaço reservado para a criação de button(tkinter)
-    """
-    button_salvar = Button(janela_cadastro, text="Salvar",command=salvar)
 
     #combobox
     """
@@ -152,7 +146,107 @@ def Cadastra_cliente():
         lista_uf.append(i)  #adicionando o conteudo da tabela dentro de uma lista
     box_uf['values'] = lista_uf #atribuindo a lista ao combobox
 
-    #geometria
+    """
+        Area reservada para a função salvar que salva os dados dentro de um banco de dados
+    """
+    
+    def salvar():
+        if entry_razao_social.get() == '' or entry_nome_fantasia.get() == '' or entry_cnpj.get() == None or entry_inscricao_estadual.get() == None or entry_inscricao_municipal.get() == None or entry_rua.get() == '' or entry_bairro.get() == '' or entry_municipio.get() == '' or entry_cep.get() == None or entry_telefone.get() == None or entry_email.get == '':
+            entry_razao_social['bg'] = 'red'
+            entry_nome_fantasia['bg'] = 'red'
+            entry_cnpj['bg'] = 'red'
+            entry_inscricao_estadual['bg'] = 'red'
+            entry_inscricao_municipal['bg'] = 'red'
+            entry_rua['bg'] = 'red'
+            entry_bairro['bg'] = 'red'
+            entry_municipio['bg'] = 'red'
+            entry_cep['bg'] = 'red'
+            entry_telefone['bg'] = 'red'
+            entry_email['bg'] =      'red'
+        else:
+            """
+                Espaço reservado para a gravação de dados no SGBD (MySQL)
+            """
+            #dados do contato
+            if valor_whatsapp == 1:
+                whatsapp = 'N'
+            else:
+                whatsapp = 'S'
+
+            columns = "telefone, \
+                        celular, \
+                        email, \
+                        url, \
+                        whatsapp"
+
+            values = f"'{entry_telefone.get().upper()}',\
+                        '{entry_celular.get().upper()}', \
+                        '{entry_email.get().upper()}', \
+                        '{entry_url.get().upper()}', \
+                        '{whatsapp.upper()}'"
+
+            sql = f"INSERT INTO contato({columns}) VALUES({values})"
+            cursor.execute(sql)
+            
+            #dados do municipio
+            columns = "nome_municipio, \
+                        rua, \
+                        numero, \
+                        complemento, \
+                        bairro, \
+                        cep, \
+                        uf"
+            
+            values = f"'{entry_municipio.get().upper()}', \
+                        '{entry_rua.get().upper()}', \
+                        '{entry_numero.get().upper()}', \
+                        '{entry_complemento.get().upper()}', \
+                        '{entry_bairro.get().upper()}', \
+                        '{entry_cep.get().upper()}', \
+                        '{box_uf.get().upper()}'"
+
+            sql = f'INSERT INTO municipio({columns}) VALUES({values})'
+            cursor.execute(sql)
+
+            #Dados do cliente
+            columns = "razao_social, \
+                        nome_fantasia, \
+                        cnpj, \
+                        inscricao_estadual, \
+                        inscricao_municipal"
+            
+            values = f"'{entry_razao_social.get().upper()}',\
+                        '{entry_nome_fantasia.get().upper()}', \
+                        '{entry_cnpj.get().upper()}', \
+                        '{entry_inscricao_estadual.get().upper()}', \
+                        '{entry_inscricao_municipal.get().upper()}'"
+
+            sql = f"INSERT INTO cliente({columns}) VALUES({values})"
+            cursor.execute(sql)
+
+
+        #limpando campos 
+        entry_razao_social.delete(0,END)
+        entry_nome_fantasia.delete(0,END)
+        entry_cnpj.delete(0,END)
+        entry_inscricao_estadual.delete(0,END)
+        entry_inscricao_municipal.delete(0,END)
+        entry_rua.delete(0,END)
+        entry_numero.delete(0,END)
+        entry_complemento.delete(0,END)
+        entry_bairro.delete(0,END)
+        entry_municipio.delete(0,END)
+        entry_cep.delete(0,END)
+        entry_telefone.delete(0,END)
+        entry_celular.delete(0,END)
+        entry_url.delete(0,END)
+        entry_email.delete(0,END)
+    """
+        Espaço reservado para a criação de button(tkinter)
+    """
+    button_salvar = Button(janela_cadastro, text="Salvar",command=salvar)
+
+    #posicionamento de layout
     """
         Espaço reservado para o posicionamento de objetos dentro da janela
     """

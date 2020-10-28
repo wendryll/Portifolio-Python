@@ -1,5 +1,7 @@
 from tkinter import * #importando biblioteca tkinter
 import Cadastro
+import Consulta
+
 
 class MainProgram():
     def __init__(self):
@@ -9,9 +11,23 @@ class MainProgram():
         def info():
             info_window = Toplevel()
             info_window.title('Informações da aplicação')
+            #definindo geometria da janela info_window
+            largura = 340 #definindo a largura do formulario
+            altura =140  #definido a altura do formulario
+
+            #resolução do nosso sistema
             largura_screen = root.winfo_screenwidth() #retorna o tamanho real da largura do monitor
-            altura_screen = root.winfo_screenheight() #retorna o tamanho real da altura do monitor 
+            altura_screen = root.winfo_screenheight() #retorna o tamanho real da altura do monitor
+
+            #Posição da janela
+            posx = largura_screen/2 - largura/2  #calculo para centralizar a largura no meio
+            posy = altura_screen/2 - altura/2    #calculo para centralizar a altura no meio
+
+            #definir a geometry
+            info_window.geometry("%dx%d+%d+%d" % (largura, altura, posx, posy)) #Passando as posições definidas para a janela
+            info_window.resizable(False,False) #definindo que a janela não é redimencionavel   
             info_conteudo = Listbox(info_window,width=60,bg='lightblue')
+
             conteudo = ['Desenvolvido por:','João Alves Baldoino Junior RA: 25424','Gustavo Teixeira de Paula RA: 25428',
                         'Manoel Messias dos Santos Junior RA 25402','Thierry Kennedy Coelho da Silva RA: 25331','Wander Massuci RA: 25398','Wendryll Souza Martins RA: 25339']
 
@@ -51,10 +67,10 @@ class MainProgram():
             Espaço reservado para a criação de menus da aplicação
         """
         #Menus da janela
-        menu_principal = Menu() #criando objeto da classe menu
+        menu_principal = Menu() #criando objeto da classe tkinter metodo menu
         #menu cliente
-        clienteMenu = Menu(root,tearoff=0) #criando objeto da classe menu
-        clienteMenu.add_command(label='Consultar') #adicionando elementos ao menu
+        clienteMenu = Menu(root,tearoff=0) #criando objeto da classe tkinter metodo menu
+        clienteMenu.add_command(label='Consultar',command=Consulta.consultar) #adicionando elementos ao menu
         clienteMenu.add_command(label='Editar') #adicionando elementos ao menu
         clienteMenu.add_command(label='Excluir') #adicionando elementos ao menu
         clienteMenu.add_command(label='cadastrar',command=Cadastro.Cadastra_cliente) #adicionando elementos ao menu
@@ -68,8 +84,4 @@ class MainProgram():
         root.config(menu=menu_principal) #posicionando o menu
 
         root.mainloop()
-
-    def Exit(self,janela):
-        janela.destroy()
-
 janela = MainProgram()
