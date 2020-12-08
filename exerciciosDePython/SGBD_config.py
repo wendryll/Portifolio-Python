@@ -1,0 +1,7 @@
+#
+#DEFINIÇÕES PARA ACESSO AO SGBD MySQL
+#
+HOST="sql10.freesqldatabase.com"
+USERNAME="sql10375776"
+PASSWORD="xVEM5a4eyv"
+DBNAME="sql10375776"

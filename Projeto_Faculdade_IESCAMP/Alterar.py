@@ -52,56 +52,55 @@ def validar_letra_numero(i):
     valido = i in DadosValidacao.letras + DadosValidacao.numeros
     return valido
 
-def janela_confirma():
-    """
-    ->Exibe uma caixa de span na tela confirmando o cadastro do cliente, com um botão para click que fecha a janela
-    """
-    messagebox.showinfo("Confirmação de cadastro", "O cadastro do cliente, foi realizado com sucesso!")
-
-def Cadastra_cliente():
-    """
-    -> Cadastrar_cliente:
-        - funcao que executa uma janela tkinter de cadastramento de clientes
-    """
-
-    #janela
-    janela_cadastro = Toplevel()
-    janela_cadastro.title =("Cadastro de Clientes")
+#janela 
+def alterar():
+    janela_alterar = Toplevel()
     #definindo geometria da janela
     largura = 1300 #definindo a largura do formulario
-    altura = 350  #definido a altura do formulario
+    altura = 400  #definido a altura do formulario
     
 
     #resolução do nosso sistema
-    largura_screen = janela_cadastro.winfo_screenwidth() #retorna o tamanho real da largura do monitor
-    altura_screen = janela_cadastro.winfo_screenheight() #retorna o tamanho real da altura do monitor
+    largura_screen = janela_alterar.winfo_screenwidth() #retorna o tamanho real da largura do monitor
+    altura_screen = janela_alterar.winfo_screenheight() #retorna o tamanho real da altura do monitor
 
     #Posição da janela
     posx = largura_screen/2 - largura/2  #calculo para centralizar a largura no meio
     posy = altura_screen/2 - altura/2    #calculo para centralizar a altura no meio
 
     #definir a geometry
-    janela_cadastro.geometry("%dx%d+%d+%d" % (largura, altura, posx, posy)) #Passando as posições definidas para a janela
-    janela_cadastro.resizable(False,False) #definindo que a janela não é redimencionavel
+    janela_alterar.geometry("%dx%d+%d+%d" % (largura, altura, posx, posy)) #Passando as posições definidas para a janela
+    janela_alterar.resizable(False,False) #definindo que a janela não é redimencionavel
     
-    #label Frame
-    label_frame = LabelFrame(janela_cadastro,text='Dados do Cliente')
-    label_frame.pack(fill="both",expand="yes",padx=10,pady=10)
-    
-    #variaveis
+     #variaveis
     """
         Espaço reservado para a criação de variaveis de uso global no código
     """
     valor_whatsapp = IntVar()
-    validando_numero = janela_cadastro.register(validar_numero)
-    validando_email = janela_cadastro.register(validar_email)
-    validando_url = janela_cadastro.register(validar_url)
-    validando_letra_numero = janela_cadastro.register(validar_letra_numero)
+    validando_numero = janela_alterar.register(validar_numero)
+    validando_email = janela_alterar.register(validar_email)
+    validando_url = janela_alterar.register(validar_url)
+    validando_letra_numero = janela_alterar.register(validar_letra_numero)
 
-    #widgets
     """
-        Espaço reservado para a criação de labels(tkinters)
+    Conteudo label frame 
     """
+    label_frame = LabelFrame(janela_alterar,text='Dados do Cliente')
+    label_frame.pack(fill="both",expand="yes",padx=10,pady=10)
+
+    """
+        Espaço reservado para a criação de um combobox que busca os dados dentro de uma tabela da base de dados para 
+        a exibição ao usuario.
+    """
+    box_uf = ttk.Combobox(label_frame)#instanciando o objeto combobox
+    box_uf['state'] = 'readonly' #deixando o compo sem digitação para o usuario
+    cursor.execute('SELECT uf FROM uf') #comando select do MySQL
+    myresult = cursor.fetchall()
+    lista_uf = [] #lista com uf de uma tabela do banco de dados
+    for i in myresult:      #for que percorre o conteudo da tabela uf do banco de dados
+        lista_uf.append(i)  #adicionando o conteudo da tabela dentro de uma lista
+    box_uf['values'] = lista_uf #atribuindo a lista ao combobox
+
     label_razao_social = Label(label_frame, text="Razão Social",font='arial 10')
     label_nome_fantasia = Label(label_frame, text="Nome Fantasia:",font='arial 10')
     label_cnpj = Label(label_frame, text="CNPJ:",font='arial 10')
@@ -131,36 +130,14 @@ def Cadastra_cliente():
     entry_complemento = Entry(label_frame,width=20,validate="key",validatecommand=(validar_letra_numero,"%S"))
     entry_bairro = Entry(label_frame,width=20,validate="key",validatecommand=(validar_letra_numero,"%S"))
     entry_municipio = Entry(label_frame,width=40,validate="key",validatecommand=(validar_letra_numero,"%S"))
-    entry_cep = Entry(label_frame,validate='key',validatecommand=(validando_numero,"%S"),width=13)
+    entry_cep = Entry(label_frame,validate='key',validatecommand=(validando_numero,"%S"),width=20)
     entry_telefone = Entry(label_frame,validate='key',validatecommand=(validando_numero,"%S"),width=13)
     entry_celular = Entry(label_frame,validate='key',validatecommand=(validando_numero,"%S"),width=13)
     entry_url = Entry(label_frame,width=40,validate='key',validatecommand=(validando_url,"%S"))
     entry_email = Entry(label_frame,validate='key',validatecommand=(validando_email,"%S"),width=40)
-    
-    """
-        Espaço reservado para a criação de checkbutton(tkinter)
-    """
-    bnt_whatsapp = Checkbutton(label_frame,text="Whatsapp:",variable=valor_whatsapp).grid(row=8,column=5)
 
-    #combobox
-    """
-        Espaço reservado para a criação de um combobox que busca os dados dentro de uma tabela da base de dados para 
-        a exibição ao usuario.
-    """
-    box_uf = ttk.Combobox(label_frame)#instanciando o objeto combobox
-    box_uf['state'] = 'readonly' #deixando o compo sem digitação para o usuario
-    cursor.execute('SELECT uf FROM uf') #comando select do MySQL
-    myresult = cursor.fetchall()
-    lista_uf = [] #lista com uf de uma tabela do banco de dados
-    for i in myresult:      #for que percorre o conteudo da tabela uf do banco de dados
-        lista_uf.append(i)  #adicionando o conteudo da tabela dentro de uma lista
-    box_uf['values'] = lista_uf #atribuindo a lista ao combobox
 
-    """
-        Area reservada para a função salvar que salva os dados dentro de um banco de dados
-    """
-    
-    def salvar():
+    def atualizar():
         if entry_razao_social.get() == '' or entry_nome_fantasia.get() == '' or entry_cnpj.get() == None or entry_inscricao_estadual.get() == None or entry_inscricao_municipal.get() == None or entry_rua.get() == '' or entry_bairro.get() == '' or entry_municipio.get() == '' or entry_cep.get() == None or entry_telefone.get() == None or entry_email.get == '':
             entry_razao_social['bg'] = 'red'
             entry_nome_fantasia['bg'] = 'red'
@@ -174,88 +151,45 @@ def Cadastra_cliente():
             entry_telefone['bg'] = 'red'
             entry_email['bg'] =      'red'
         else:
-            """
-                Espaço reservado para a gravação de dados no SGBD (MySQL)
-            """
-            #dados do contato
-            if valor_whatsapp == 1:
-                whatsapp = 'N'
+            try:
+                values = f"razao_social = '{entry_razao_social.get().upper()}', \
+                            nome_fantasia = '{entry_nome_fantasia.get().upper()}', \
+                            cnpj = '{entry_cnpj.get()}', \
+                            inscricao_estadual = '{entry_inscricao_estadual.get()}',\
+                            inscricao_municipal = '{entry_inscricao_municipal.get()}'"
+
+                cursor.execute(f'UPDATE cliente SET {values} WHERE id_cliente = {entry_pesquisa.get()}')
+
+                values = f"nome_municipio = '{entry_municipio.get().upper()}', \
+                            rua = '{entry_rua.get().upper()}', \
+                            numero = '{entry_numero.get()}', \
+                            complemento = '{entry_complemento.get().upper()}', \
+                            bairro = '{entry_bairro.get().upper()}', \
+                            cep = '{entry_cep.get()}', \
+                            uf = '{box_uf.get().upper()}'"
+                cursor.execute(f'UPDATE municipio SET {values} WHERE id_municipio = {entry_pesquisa.get()}')
+
+                if valor_whatsapp == 1:
+                    whatsapp = 'N'
+                else:
+                    whatsapp = 'S'
+
+
+                values = f"telefone = '{entry_telefone.get()}', \
+                            celular = '{entry_celular.get()}', \
+                            email = '{entry_email.get().upper()}', \
+                            url = '{entry_url.get().upper()}', \
+                            whatsapp = '{whatsapp.upper()}'"
+
+                cursor.execute(f'UPDATE contato SET {values} WHERE id_contato = {entry_pesquisa.get()}')
+                db_connection.commit()
+                janela_alterar.destroy()
+            except:
+                messagebox.showinfo('ERRO!','Ocorreu um erro tente novamente :(')
             else:
-                whatsapp = 'S'
-
-            columns = "telefone, \
-                        celular, \
-                        email, \
-                        url, \
-                        whatsapp"
-
-            values = f"'{entry_telefone.get().upper()}',\
-                        '{entry_celular.get().upper()}', \
-                        '{entry_email.get().upper()}', \
-                        '{entry_url.get().upper()}', \
-                        '{whatsapp.upper()}'"
-
-            sql = f"INSERT INTO contato({columns}) VALUES({values})"
-            cursor.execute(sql)
-            #obtendo o ID que acabou de ser gerado no insert acima
-            id_contato = cursor.lastrowid
-
-            #dados do municipio
-            columns = "nome_municipio, \
-                        rua, \
-                        numero, \
-                        complemento, \
-                        bairro, \
-                        cep, \
-                        uf"
-            
-            values = f"'{entry_municipio.get().upper()}', \
-                        '{entry_rua.get().upper()}', \
-                        '{entry_numero.get().upper()}', \
-                        '{entry_complemento.get().upper()}', \
-                        '{entry_bairro.get().upper()}', \
-                        '{entry_cep.get().upper()}', \
-                        '{box_uf.get().upper()}'"
-
-            sql = f'INSERT INTO municipio({columns}) VALUES({values})'
-            cursor.execute(sql)
-            #obtendo o ID que acabou de ser gerado no insert acima
-            id_municipio = cursor.lastrowid
-
-            #Dados do cliente
-            columns = "razao_social, \
-                        nome_fantasia, \
-                        cnpj, \
-                        inscricao_estadual, \
-                        inscricao_municipal, \
-                        contato, \
-                        municipio"
-            
-            values = f"'{entry_razao_social.get().upper()}',\
-                        '{entry_nome_fantasia.get().upper()}', \
-                        '{entry_cnpj.get().upper()}', \
-                        '{entry_inscricao_estadual.get().upper()}', \
-                        '{entry_inscricao_municipal.get().upper()}', \
-                        '{id_contato}', \
-                        '{id_municipio}'"
-            
-            sql = f"INSERT INTO cliente({columns}) VALUES({values})"
-            cursor.execute(sql)
-
-            db_connection.commit()
-            db_connection.close()
-
-            janela_cadastro.destroy()
-            janela_confirma()
-
+                messagebox.showinfo('ALteração realizada','Alteração realizada com sucesso :)')
     """
-        Espaço reservado para a criação de button(tkinter)
-    """
-    button_salvar = Button(label_frame, text="Salvar",command=salvar)
-
-    #posicionamento de layout
-    """
-        Espaço reservado para o posicionamento de objetos dentro da janela
+    Posicionamento
     """
     label_razao_social.grid(row=0,column=0,sticky=W)
     entry_razao_social.grid(row=0,column=1,sticky=W)
@@ -289,6 +223,15 @@ def Cadastra_cliente():
     entry_url.grid(row=9,column=1,sticky=W)
     label_email.grid(row=10,column=0,sticky=W)
     entry_email.grid(row=10,column=1,sticky=W)
-    button_salvar.grid(row=11,column=4)
 
-    janela_cadastro.mainloop()
+    labelframe_pesquisa = LabelFrame(janela_alterar,text='Pesquisa de cliente')
+    labelframe_pesquisa.pack(fill="both",expand="yes",padx=10,pady=10)
+
+    label_pesquisa = Label(labelframe_pesquisa,text='ID cliente:')
+    entry_pesquisa = Entry(labelframe_pesquisa,validate='key',validatecommand=(validando_numero,"%S"))
+    bnt_atualizar = Button(labelframe_pesquisa,text='Atualizar',command=atualizar)
+
+    label_pesquisa.grid(row=0,column=0,padx=10,pady=10)
+    entry_pesquisa.grid(row=0,column=1,padx=10,pady=10)
+    bnt_atualizar.grid(row=0,column=2,padx=10,pady=10)
+    janela_alterar.mainloop()

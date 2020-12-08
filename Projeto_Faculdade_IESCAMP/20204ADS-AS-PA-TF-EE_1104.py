@@ -1,9 +1,10 @@
 from tkinter import * #importando biblioteca tkinter
 import Cadastro
 import Consulta
+import ListarCliente
+import Alterar
 
-
-class MainProgram():
+class MainProgram(Frame):
     def __init__(self):
         """
             Espaço reservado para as funções e objetos da classe
@@ -71,10 +72,10 @@ class MainProgram():
         #menu cliente
         clienteMenu = Menu(root,tearoff=0) #criando objeto da classe tkinter metodo menu
         clienteMenu.add_command(label='Consultar',command=Consulta.consultar) #adicionando elementos ao menu
-        clienteMenu.add_command(label='Editar') #adicionando elementos ao menu
-        clienteMenu.add_command(label='Excluir') #adicionando elementos ao menu
+        clienteMenu.add_command(label='Editar',command=Alterar.alterar) #adicionando elementos ao menu
+        clienteMenu.add_command(label='Excluir',command=ListarCliente.ListarCliente) #adicionando elementos ao menu
         clienteMenu.add_command(label='cadastrar',command=Cadastro.Cadastra_cliente) #adicionando elementos ao menu
-        clienteMenu.add_command(label='Listar') #adicionando elementos ao menu
+        clienteMenu.add_command(label='Listar',command=ListarCliente.ListarCliente) #adicionando elementos ao menu
         menu_principal.add_cascade(menu=clienteMenu,label='Cliente') #transformndo o menu em cascata
         #menu options
         optionsMenu = Menu(root,tearoff=0)
